@@ -19,8 +19,9 @@ class CodeChunk:
 
 
 class PythonCodeChunker:
+    """Code chunker class"""
 
-    def __init__(self, file_path: str, file_name:str):
+    def __init__(self, file_path: str, file_name: str):
         """Constructor"""
 
         with open(file_path, "r") as file:
@@ -37,7 +38,6 @@ class PythonCodeChunker:
         if ast.get_docstring(node):
             return ast.get_docstring(node)
         return ""
-
 
     def process_imports(self):
         """Extract and chunk import statements."""
@@ -56,7 +56,7 @@ class PythonCodeChunker:
                     type="import",
                     name="imports",
                     docstring="Module imports",
-                    file_name = self.file_name
+                    file_name=self.file_name,
                 )
             )
 
@@ -79,7 +79,7 @@ class PythonCodeChunker:
                             type="class_definition",
                             name=node.name,
                             docstring=self.extract_docstring(node),
-                            file_name = self.file_name
+                            file_name=self.file_name,
                         )
                     )
 
@@ -99,7 +99,7 @@ class PythonCodeChunker:
                 type="class_definition",
                 name=node.name,
                 docstring=docstring,
-                file_name = self.file_name
+                file_name=self.file_name,
             )
         )
 
@@ -149,7 +149,7 @@ class PythonCodeChunker:
                             type="class_attributes",
                             name=f"{class_name}_attributes_part_{chunk_index}",
                             parent=class_name,
-                            file_name = self.file_name
+                            file_name=self.file_name,
                         )
                     )
                     current_chunk = []
@@ -167,7 +167,7 @@ class PythonCodeChunker:
                         type="class_attributes",
                         name=f"{class_name}_attributes_part_{chunk_index}",
                         parent=class_name,
-                        file_name = self.file_name
+                        file_name=self.file_name,
                     )
                 )
             else:
@@ -177,7 +177,7 @@ class PythonCodeChunker:
                         type="class_attributes",
                         name=f"{class_name}_attributes",
                         parent=class_name,
-                        file_name = self.file_name
+                        file_name=self.file_name,
                     )
                 )
 
@@ -210,7 +210,7 @@ class PythonCodeChunker:
                             type="class_method",
                             name=f"{method.name}",
                             parent=class_name,
-                            file_name = self.file_name
+                            file_name=self.file_name,
                         )
                     )
                     current_chunk = []
@@ -226,7 +226,7 @@ class PythonCodeChunker:
                     type="class_method",
                     name=f"{method.name}",
                     parent=class_name,
-                    file_name = self.file_name
+                    file_name=self.file_name,
                 )
             )
 
@@ -245,7 +245,7 @@ class PythonCodeChunker:
                     type="function",
                     name=node.name,
                     docstring=docstring,
-                    file_name = self.file_name
+                    file_name=self.file_name,
                 )
                 self.chunks.append(chunk)
 

@@ -94,3 +94,4 @@ class DocDBRetriever(BaseRetriever):
         result = await asyncio.gather(*tasks)
 
         return result
+    

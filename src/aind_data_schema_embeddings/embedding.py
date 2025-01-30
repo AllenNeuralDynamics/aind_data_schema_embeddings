@@ -11,7 +11,9 @@ from aind_data_schema_embeddings.doc_chunker import DocumentChunker
 from aind_data_schema_embeddings.utils import ResourceManager
 
 data_schema_src_path = Path(r"C:\Users\sreya.kumar\aind-data-schema-dev\src")
-data_schema_read_the_docs_path = Path(r"c:\Users\sreya.kumar\Downloads\aind_data_schema_read_the_docs")
+data_schema_read_the_docs_path = Path(
+    r"c:\Users\sreya.kumar\Downloads\aind_data_schema_read_the_docs"
+)
 file_dir = [data_schema_src_path, data_schema_read_the_docs_path]
 
 db_name = "metadata_vector_index"
@@ -65,20 +67,23 @@ def write_embeddings_to_docdb_for_batch(
         except Exception as e:
             logging.error(f"Error inserting document: {e}")
 
-def chunk_maker(file_name: str, file_path:str):
-    '''Creating chunks based on file type'''
 
-    if ".py" in file_name: 
+def chunk_maker(file_name: str, file_path: str):
+    """Creating chunks based on file type"""
+
+    if ".py" in file_name:
         logging.info("Code Chunker initialized")
-        code_chunker = PythonCodeChunker(file_path = str(file_path), 
-                                    file_name = file_name)
+        code_chunker = PythonCodeChunker(
+            file_path=str(file_path), file_name=file_name
+        )
         logging.info("Creating chunks...")
         chunks = code_chunker.create_chunks()
-    
+
     if ".txt" in file_name:
         logging.info("Document Chunker initialized")
-        doc_chunker = DocumentChunker(file_path = str(file_path), 
-                                  file_name = file_name)
+        doc_chunker = DocumentChunker(
+            file_path=str(file_path), file_name=file_name
+        )
         logging.info("Creating chunks...")
         chunks = doc_chunker.create_chunks()
 
@@ -86,15 +91,14 @@ def chunk_maker(file_name: str, file_path:str):
     return text_chunks
 
 
-
-
 with ResourceManager() as RM:
 
     collection = RM.client[db_name][collection]
 
     logging.info("Finding files that have already been embedded")
-    embedded_files = set([asset["file_name"] for asset in 
-                                  collection.find({},{ "file_name": 1 })])
+    embedded_files = set(
+        [asset["file_name"] for asset in collection.find({}, {"file_name": 1})]
+    )
     logging.info(f"Files already embedded: {embedded_files}")
 
     logging.info("Going through directory")
@@ -103,17 +107,15 @@ with ResourceManager() as RM:
 
             logging.info(f"Processing file: {file_path}")
             file_name = file_path.name
-            
+
             try:
                 chunks = chunk_maker(file_name, file_path)
                 logging.info("Vectorizing chunks")
-                text_and_vector_list = generate_embeddings_for_batch(
-                    chunks
-                )
+                text_and_vector_list = generate_embeddings_for_batch(chunks)
                 logging.info("Adding to vectorstore...")
                 write_embeddings_to_docdb_for_batch(
                     file_name, collection, text_and_vector_list
                 )
-        
+
             except Exception as e:
                 logging.error(f"Error processing file {file_path}: {e}")
