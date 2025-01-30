@@ -63,7 +63,7 @@ class ResourceManager:
             return self
         except Exception as e:
             logging.exception(e)
-            self.__exit__(None, None, None)
+            self.__exit__()
             raise
 
     def __exit__(self):
