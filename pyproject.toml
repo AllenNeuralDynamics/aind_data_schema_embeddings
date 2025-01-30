@@ -17,6 +17,12 @@ readme = "README.md"
 dynamic = ["version"]
 
 dependencies = [
+    "aind-data-access-api[docdb]",
+    "langchain_core",
+    "motor",
+    "nest-asyncio",
+    "pymongo",
+    "sshtunnel",
 ]
 
 [project.optional-dependencies]
