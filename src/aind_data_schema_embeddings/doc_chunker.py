@@ -20,7 +20,7 @@ class DocumentChunker:
         """Constructor"""
         with open(file_path, "r", encoding="utf-8") as file:
             self.content = file.read()
-        self.max_chunk_size = 1024
+        self.max_chunk_size = 8192
         self.file_name = file_name
         self.chunks = []
 
