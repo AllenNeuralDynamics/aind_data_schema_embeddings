@@ -95,3 +95,6 @@ class DocDBRetriever(BaseRetriever):
 
         return result
     
+# retriever = DocDBRetriever(k = 5)
+# query = "What mongodb query can i construct to find the injection materials?"
+# print(retriever.invoke(query))
