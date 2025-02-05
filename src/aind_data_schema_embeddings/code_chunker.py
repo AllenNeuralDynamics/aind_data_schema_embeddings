@@ -1,6 +1,7 @@
 """Python code chunker that preserves code structure and syntax"""
 
 import ast
+import json
 import textwrap
 from dataclasses import dataclass
 from typing import List, Optional, Union
@@ -29,7 +30,7 @@ class PythonCodeChunker:
         self.tree = ast.parse(self.content)
         self.chunks: List[CodeChunk] = []
         self.current_class = None
-        self.max_chunk_size = 1024
+        self.max_chunk_size = 8192
         self.file_name = file_name
 
     def extract_docstring(self, node) -> str:
@@ -256,4 +257,26 @@ class PythonCodeChunker:
         self.process_imports()
         self.process_classes()
         self.process_standalone_functions()
-        return self.chunks
+
+        combined_chunk_list = []
+        curr_chunk = ""
+        chunk_size = 0
+
+        for chunk in self.chunks:
+            #     print(type(chunk))
+            chunk_str = json.dumps(chunk.__dict__)
+
+            chunk_size = len(curr_chunk)
+            chunk_to_add_size = len(chunk_str)
+
+            if chunk_size + chunk_to_add_size >= self.max_chunk_size:
+                combined_chunk_list.append(curr_chunk)
+                curr_chunk = chunk_str
+            else:
+                curr_chunk += chunk_str
+
+        # Append the last chunk if it has any content
+        if curr_chunk:
+            combined_chunk_list.append(curr_chunk)
+
+        return combined_chunk_list
