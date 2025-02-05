@@ -1,4 +1,4 @@
-# aind_data_schema_embeddings
+# Embeddings of the AIND data schema codebase
 
 [![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
 ![Code Style](https://img.shields.io/badge/code%20style-black-black)
@@ -7,22 +7,25 @@
 ![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen?logo=codecov)
 ![Python](https://img.shields.io/badge/python->=3.10-blue?logo=python)
 
+## Overview
 
-
-## Usage
- - To use this template, click the green `Use this template` button and `Create new repository`.
- - After github initially creates the new repository, please wait an extra minute for the initialization scripts to finish organizing the repo.
- - To enable the automatic semantic version increments: in the repository go to `Settings` and `Collaborators and teams`. Click the green `Add people` button. Add `svc-aindscicomp` as an admin. Modify the file in `.github/workflows/tag_and_publish.yml` and remove the if statement in line 65. The semantic version will now be incremented every time a code is committed into the main branch.
- - To publish to PyPI, enable semantic versioning and uncomment the publish block in `.github/workflows/tag_and_publish.yml`. The code will now be published to PyPI every time the code is committed into the main branch.
- - The `.github/workflows/test_and_lint.yml` file will run automated tests and style checks every time a Pull Request is opened. If the checks are undesired, the `test_and_lint.yml` can be deleted. The strictness of the code coverage level, etc., can be modified by altering the configurations in the `pyproject.toml` file and the `.flake8` file.
+- In order to provide GAMER more context on the data schema structure, and to help users query the schema, these embeddings are fed into tge 
+- To use this template, click the green `Use this template` button and `Create new repository`.
+- After github initially creates the new repository, please wait an extra minute for the initialization scripts to finish organizing the repo.
+- To enable the automatic semantic version increments: in the repository go to `Settings` and `Collaborators and teams`. Click the green `Add people` button. Add `svc-aindscicomp` as an admin. Modify the file in `.github/workflows/tag_and_publish.yml` and remove the if statement in line 65. The semantic version will now be incremented every time a code is committed into the main branch.
+- To publish to PyPI, enable semantic versioning and uncomment the publish block in `.github/workflows/tag_and_publish.yml`. The code will now be published to PyPI every time the code is committed into the main branch.
+- The `.github/workflows/test_and_lint.yml` file will run automated tests and style checks every time a Pull Request is opened. If the checks are undesired, the `test_and_lint.yml` can be deleted. The strictness of the code coverage level, etc., can be modified by altering the configurations in the `pyproject.toml` file and the `.flake8` file.
 
 ## Installation
+
 To use the software, in the root directory, run
+
 ```bash
 pip install -e .
 ```
 
 To develop the code, run
+
 ```bash
 pip install -e .[dev]
 ```
@@ -46,16 +49,19 @@ interrogate .
 ```
 
 - Use **flake8** to check that code is up to standards (no unused imports, etc.):
+
 ```bash
 flake8 .
 ```
 
 - Use **black** to automatically format the code into PEP standards:
+
 ```bash
 black .
 ```
 
 - Use **isort** to automatically sort import statements:
+
 ```bash
 isort .
 ```
@@ -63,6 +69,7 @@ isort .
 ### Pull requests
 
 For internal members, please create a branch. For external members, please fork the repository and open a pull request from the fork. We'll primarily use [Angular](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#commit) style for commit messages. Roughly, they should follow the pattern:
+
 ```text
 <type>(<scope>): <short summary>
 ```
@@ -82,30 +89,38 @@ where scope (optional) describes the packages affected by the code changes and t
 
 The table below, from [semantic release](https://github.com/semantic-release/semantic-release), shows which commit message gets you which release type when `semantic-release` runs (using the default configuration):
 
-| Commit message                                                                                                                                                                                   | Release type                                                                                                    |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| `fix(pencil): stop graphite breaking when too much pressure applied`                                                                                                                             | ~~Patch~~ Fix Release, Default release                                                                          |
-| `feat(pencil): add 'graphiteWidth' option`                                                                                                                                                       | ~~Minor~~ Feature Release                                                                                       |
-| `perf(pencil): remove graphiteWidth option`<br><br>`BREAKING CHANGE: The graphiteWidth option has been removed.`<br>`The default graphite width of 10mm is always used for performance reasons.` | ~~Major~~ Breaking Release <br /> (Note that the `BREAKING CHANGE: ` token must be in the footer of the commit) |
+| Commit message                                                                                                                                                                                         | Release type                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `fix(pencil): stop graphite breaking when too much pressure applied`                                                                                                                                 | ~~Patch~~ Fix Release, Default release                                                                            |
+| `feat(pencil): add 'graphiteWidth' option`                                                                                                                                                           | ~~Minor~~ Feature Release                                                                                         |
+| `perf(pencil): remove graphiteWidth option<br>``<br>BREAKING CHANGE: The graphiteWidth option has been removed.``<br>The default graphite width of 10mm is always used for performance reasons.` | ~~Major~~ Breaking Release <br /> (Note that the `BREAKING CHANGE: ` token must be in the footer of the commit) |
 
 ### Documentation
+
 To generate the rst files source files for documentation, run
+
 ```bash
 sphinx-apidoc -o docs/source/ src
 ```
+
 Then to create the documentation HTML files, run
+
 ```bash
 sphinx-build -b html docs/source/ docs/build/html
 ```
+
 More info on sphinx installation can be found [here](https://www.sphinx-doc.org/en/master/usage/installation.html).
 
 ### Read the Docs Deployment
+
 Note: Private repositories require **Read the Docs for Business** account. The following instructions are for a public repo.
 
 The following are required to import and build documentations on *Read the Docs*:
+
 - A *Read the Docs* user account connected to Github. See [here](https://docs.readthedocs.com/platform/stable/guides/connecting-git-account.html) for more details.
-- *Read the Docs* needs elevated permissions to perform certain operations that ensure that the workflow is as smooth as possible, like installing webhooks. If you are not the owner of the repo, you may have to request elevated permissions from the owner/admin. 
+- *Read the Docs* needs elevated permissions to perform certain operations that ensure that the workflow is as smooth as possible, like installing webhooks. If you are not the owner of the repo, you may have to request elevated permissions from the owner/admin.
 - A **.readthedocs.yaml** file in the root directory of the repo. Here is a basic template:
+
 ```yaml
 # Read the Docs configuration file
 # See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
@@ -133,8 +148,9 @@ python:
 ```
 
 Here are the steps for building docs in *Read the Docs*. See [here](https://docs.readthedocs.com/platform/stable/intro/add-project.html) for detailed instructions:
+
 - From *Read the Docs* dashboard, click on **Add project**.
-- For automatic configuration, select **Configure automatically** and type the name of the repo. A repo with public visibility should appear as you type. 
+- For automatic configuration, select **Configure automatically** and type the name of the repo. A repo with public visibility should appear as you type.
 - Follow the subsequent steps.
 - For manual configuration, select **Configure manually** and follow the subsequent steps
 
