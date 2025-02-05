@@ -6,9 +6,19 @@ from pathlib import Path
 
 from sentence_transformers import SentenceTransformer
 
+# folder_path = (
+#     r"C:\Users\sreya.kumar\Documents\GitHub\"
+#     r"aind_data_schema_embeddings\src\aind_data_schema_embeddings"
+# )
+# os.chdir(folder_path)
+
+# # Now add this directory to path
+# sys.path.append(os.getcwd())
+
 from aind_data_schema_embeddings.code_chunker import PythonCodeChunker
 from aind_data_schema_embeddings.doc_chunker import DocumentChunker
 from aind_data_schema_embeddings.utils import ResourceManager
+
 
 data_schema_src_path = Path(r"C:\Users\sreya.kumar\aind-data-schema-dev\src")
 data_schema_read_the_docs_path = Path(
@@ -86,9 +96,10 @@ def chunk_maker(file_name: str, file_path: str):
         )
         logging.info("Creating chunks...")
         chunks = doc_chunker.create_chunks()
+        chunks = [class_to_text(chunk) for chunk in chunks]
 
-    text_chunks = [class_to_text(chunk) for chunk in chunks]
-    return text_chunks
+    # text_chunks = [class_to_text(chunk) for chunk in chunks]
+    return chunks
 
 
 with ResourceManager() as RM:
