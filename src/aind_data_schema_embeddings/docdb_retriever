@@ -1,4 +1,5 @@
-import json, asyncio
+import json, asyncio, os, logging
+from datetime import datetime
 import numpy as np
 from typing import List, Optional, Any
 from langchain_core.callbacks import CallbackManagerForRetrieverRun
@@ -19,6 +20,14 @@ docdb_api_client = MetadataDbClient(
    host=API_GATEWAY_HOST,
    database=DATABASE,
    collection=COLLECTION,
+)
+
+os.makedirs("logs", exist_ok=True)
+logging.basicConfig(
+    filename=f"logs/retriever_log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    filemode="w",
 )
 
 class DocDBRetriever(BaseRetriever):
@@ -43,9 +52,14 @@ class DocDBRetriever(BaseRetriever):
         
         #Embed query
         query_to_embed = [query]
-        query_prompt_name = "s2p_query"
-        model = SentenceTransformer("dunzhang/stella_en_1.5B_v5", trust_remote_code=True)
-        embedded_query = model.encode(query_to_embed, prompt_name=query_prompt_name)[0]
+        #query_prompt_name = "s2p_query"
+        logging.info("connecting to embedding model")
+        model = SentenceTransformer(
+            "mixedbread-ai/mxbai-embed-large-v1", truncate_dim=1024
+        )
+        logging.info("Starting to embed query")
+        embedded_query = model.encode(query, prompt_name="query")
+        logging.info("Finished embed query")
  
         #Construct aggregation pipeline
         vector_search = {
@@ -67,6 +81,8 @@ class DocDBRetriever(BaseRetriever):
             }
         }
 
+
+
         pipeline = [vector_search, projection_stage]
         if query_filter:
             pipeline.insert(0, query_filter)
@@ -74,6 +90,7 @@ class DocDBRetriever(BaseRetriever):
 
 
         try:
+            logging.info("Starting vector search")
             result = docdb_api_client.aggregate_docdb_records(pipeline=pipeline)
         except Exception as e:
             print(e)
@@ -95,6 +112,6 @@ class DocDBRetriever(BaseRetriever):
 
         return result
     
-# retriever = DocDBRetriever(k = 5)
-# query = "What mongodb query can i construct to find the injection materials?"
-# print(retriever.invoke(query))
+retriever = DocDBRetriever(k = 5)
+query = "What mongodb query can i construct to find the injection materials?"
+print(retriever.invoke(query))
