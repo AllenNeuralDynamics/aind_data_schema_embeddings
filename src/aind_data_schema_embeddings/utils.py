@@ -5,7 +5,6 @@ import os
 from urllib.parse import quote_plus
 
 from dotenv import load_dotenv
-from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import MongoClient
 from sshtunnel import SSHTunnelForwarder
 
@@ -47,7 +46,6 @@ class ResourceManager:
         """Constructor"""
         self.ssh_server = None
         self.client = None
-        self.async_client = None
 
     def __enter__(self):
         """Creates ssh tunnel"""
@@ -57,7 +55,6 @@ class ResourceManager:
             logging.info("SSH tunnel opened")
 
             self.client = MongoClient(CONNECTION_STRING)
-            self.async_client = AsyncIOMotorClient(CONNECTION_STRING)
             logging.info("Successfully connected to MongoDB")
 
             return self
@@ -70,8 +67,6 @@ class ResourceManager:
         """Closes ssh tunnel"""
         if self.client:
             self.client.close()
-        if self.async_client:
-            self.async_client.close()
         if self.ssh_server:
             self.ssh_server.stop()
         logging.info("Resources cleaned up")
