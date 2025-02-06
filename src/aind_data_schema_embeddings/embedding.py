@@ -2,9 +2,15 @@
 
 import json
 import logging
+import os
+from datetime import datetime
 from pathlib import Path
 
 from sentence_transformers import SentenceTransformer
+
+from aind_data_schema_embeddings.code_chunker import PythonCodeChunker
+from aind_data_schema_embeddings.doc_chunker import DocumentChunker
+from aind_data_schema_embeddings.utils import ResourceManager
 
 # folder_path = (
 #     r"C:\Users\sreya.kumar\Documents\GitHub\"
@@ -14,10 +20,6 @@ from sentence_transformers import SentenceTransformer
 
 # # Now add this directory to path
 # sys.path.append(os.getcwd())
-
-from aind_data_schema_embeddings.code_chunker import PythonCodeChunker
-from aind_data_schema_embeddings.doc_chunker import DocumentChunker
-from aind_data_schema_embeddings.utils import ResourceManager
 
 
 data_schema_src_path = Path(r"C:\Users\sreya.kumar\aind-data-schema-dev\src")
@@ -31,15 +33,17 @@ collection = "aind_data_schema_vectors"
 index_name = "vector_embeddings_index"
 # vectors stored in vector_embeddings
 
+os.makedirs("logs", exist_ok=True)
 logging.basicConfig(
-    filename="vector_store.log",
+    filename=f"logs/log_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log",
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     filemode="w",
 )
 
+
 model = SentenceTransformer(
-    "dunzhang/stella_en_1.5B_v5", device="cpu", trust_remote_code=True
+    "mixedbread-ai/mxbai-embed-large-v1", truncate_dim=1024
 )
 
 
@@ -51,10 +55,9 @@ def class_to_text(class_instance):
 
 def generate_embeddings_for_batch(batch: list) -> dict:
     """Generates embeddings vectors for a batch of loaded documents"""
+    docs_embeddings = model.encode(batch)
 
-    schema_embeddings = model.encode(batch, batch_size=len(batch))
-    vectors_to_mongodb = [vector.tolist() for vector in schema_embeddings]
-
+    vectors_to_mongodb = [vector.tolist() for vector in docs_embeddings]
     text_and_vector_list = list(zip(batch, vectors_to_mongodb))
 
     return text_and_vector_list
