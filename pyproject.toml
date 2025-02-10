@@ -19,6 +19,7 @@ dynamic = ["version"]
 dependencies = [
     "aind-data-access-api[docdb]",
     "langchain_core",
+    "langchain_text_splitters",
     "pymongo",
     "sshtunnel",
 ]

@@ -10,23 +10,22 @@ from sentence_transformers import SentenceTransformer
 
 from aind_data_schema_embeddings.code_chunker import PythonCodeChunker
 from aind_data_schema_embeddings.doc_chunker import DocumentChunker
+from aind_data_schema_embeddings.json_chunker import JSONChunker
 from aind_data_schema_embeddings.utils import ResourceManager
 
-# folder_path = (
-#     r"C:\Users\sreya.kumar\Documents\GitHub\"
-#     r"aind_data_schema_embeddings\src\aind_data_schema_embeddings"
-# )
-# os.chdir(folder_path)
 
-# # Now add this directory to path
-# sys.path.append(os.getcwd())
-
-
-data_schema_src_path = Path(r"C:\Users\sreya.kumar\aind-data-schema-dev\src")
+data_schema_src_path = Path(
+    r"C:\Users\sreya.kumar\aind-data-schema-dev\src"
+    )
+data_schema_schema_path = Path(
+    r"C:\Users\sreya.kumar\aind-data-schema-dev\schemas"
+    )
 data_schema_read_the_docs_path = Path(
     r"c:\Users\sreya.kumar\Downloads\aind_data_schema_read_the_docs"
 )
-file_dir = [data_schema_src_path, data_schema_read_the_docs_path]
+file_dir = [data_schema_src_path, 
+            data_schema_schema_path,
+            data_schema_read_the_docs_path]
 
 db_name = "metadata_vector_index"
 collection = "aind_data_schema_vectors"
@@ -101,7 +100,14 @@ def chunk_maker(file_name: str, file_path: str):
         chunks = doc_chunker.create_chunks()
         chunks = [class_to_text(chunk) for chunk in chunks]
 
-    # text_chunks = [class_to_text(chunk) for chunk in chunks]
+    if ".json" in file_name:
+        logging.info("JSON Chunker initialized")
+        doc_chunker = DocumentChunker(
+            file_path=str(file_path), file_name=file_name
+        )
+        logging.info("Creating chunks...")
+        chunks = JSONChunker.create_chunks()
+        #chunks = [class_to_text(chunk) for chunk in chunks]
     return chunks
 
 

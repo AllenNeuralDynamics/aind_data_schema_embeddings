@@ -1,0 +1,26 @@
+"""Document chunker that preserves JSON nesting"""
+
+import json
+
+from langchain_text_splitters import RecursiveJsonSplitter
+
+class JSONChunker:
+    """Document chunker class"""
+
+    def __init__(self, file_path: str, file_name: str):
+        """Constructor"""
+        with open(file_path) as file:
+            self.content = json.load(file)
+        self.max_chunk_size = 8192
+        self.file_name = file_name
+        self.splitter = RecursiveJsonSplitter(
+            max_chunk_size= self.max_chunk_size
+            )
+        self.chunks = []
+
+    def create_chunks(self):
+        """Create all chunks from document."""
+        str_chunks = self.splitter.split_text(json_data=self.content)
+        self.chunks.extend(str_chunks)
+        return self.chunks
+
