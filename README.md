@@ -1,3 +1,6 @@
+# Archive Notice
+This repo is being archived.
+
 # Embeddings of the AIND data schema codebase
 
 [![License](https://img.shields.io/badge/license-MIT-brightgreen)](LICENSE)
